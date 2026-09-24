@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏫 十班的墙</title>
+<style>
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #3b4252;
+    background: linear-gradient(160deg, #e3f0ff 0%, #c2dcff 40%, #9dc0f5 100%);
+    background-attachment: fixed;
+    padding: 36px 16px 80px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .wrap{
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- 标题 ---------- */
+  header{ text-align: center; margin-bottom: 26px; }
+
+  h1{
+    margin: 0 0 8px;
+    font-size: 34px;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 3px 14px rgba(21, 71, 158, .35);
+  }
+  h1 .wave{
+    display: inline-block;
+    animation: wave 2s ease-in-out infinite;
+  }
+  @keyframes wave{
+    0%,100%{ transform: rotate(0deg) scale(1); }
+    30%    { transform: rotate(-12deg) scale(1.15); }
+    60%    { transform: rotate(10deg) scale(.98); }
+  }
+
+  .sub{
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+    opacity: .92;
+    text-shadow: 0 1px 6px rgba(21, 71, 158, .3);
+  }
+
+  /* ---------- 发布区 ---------- */
+  .composer{
+    background: rgba(255, 255, 255, .85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, .85);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 12px 34px rgba(21, 71, 158, .14);
+    margin-bottom: 20px;
+  }
+
+  input, textarea{
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    color: #3b4252;
+    background: #f8fbff;
+    border: 1.5px solid #cfe1fb;
+    border-radius: 13px;
+    padding: 11px 14px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  input::placeholder, textarea::placeholder{ color: #9aabc4; }
+  input:focus, textarea:focus{
+    border-color: #4d8bf0;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(77, 139, 240, .14);
+  }
+  textarea{
+    margin-top: 10px;
+    min-height: 100px;
+    line-height: 1.7;
+    resize: vertical;
+  }
+  .error{
+    border-color: #ff2d55 !important;
+    box-shadow: 0 0 0 4px rgba(255, 45, 85, .18) !important;
+    animation: shake .32s;
+  }
+  @keyframes shake{
+    25%{ transform: translateX(-5px); }
+    75%{ transform: translateX(5px); }
+  }
+
+  .composer-foot{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    gap: 12px;
+  }
+  .counter{ font-size: 12.5px; color: #8ba0bd; }
+
+  button{
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 11px 28px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6ba4f8, #2f6fe0);
+    box-shadow: 0 8px 20px rgba(47, 111, 224, .38);
+    transition: transform .18s, box-shadow .18s, opacity .18s, background .18s;
+  }
+  button:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(47, 111, 224, .48);
+  }
+  button:active{ transform: translateY(0) scale(.97); }
+  button:disabled{
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ---------- 统计栏 ---------- */
+  .stats{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 4px 14px;
+    font-size: 13.5px;
+    color: #fff;
+    text-shadow: 0 1px 6px rgba(21, 71, 158, .3);
+  }
+  .stats b{ font-size: 16px; }
+
+  .link-btn{
+    background: rgba(255, 255, 255, .28);
+    border: 1px solid rgba(255, 255, 255, .6);
+    color: #fff;
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 12.5px;
+    font-weight: 500;
+    box-shadow: none;
+    cursor: pointer;
+  }
+  .link-btn:hover{
+    transform: none;
+    background: rgba(255, 255, 255, .45);
+    box-shadow: none;
+  }
+  .link-btn:disabled{ opacity: .6; cursor: not-allowed; }
+
+  /* ---------- 视图切换 Tab ---------- */
+  .view-tabs{
+    display: flex;
+    gap: 6px;
+    padding: 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .28);
+    border: 1px solid rgba(255, 255, 255, .5);
+    width: fit-content;
+    margin: 0 auto 18px;
+  }
+
+  .tab{
+    background: transparent;
+    box-shadow: none;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 22px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(21, 71, 158, .3);
+    transition: background .18s, color .18s, box-shadow .18s;
+  }
+  .tab:hover{
+    transform: none;
+    background: rgba(255, 255, 255, .22);
+    box-shadow: none;
+  }
+  .tab.active{
+    background: #fff;
+    color: #2f6fe0;
+    text-shadow: none;
+    box-shadow: 0 4px 14px rgba(21, 71, 158, .2);
+  }
+  .tab.active:hover{ background: #fff; }
+
+  /* ---------- 视图容器 ---------- */
+  .view{ display: none; }
+  .view.active{ display: block; animation: fadeIn .22s ease both; }
+  @keyframes fadeIn{
+    from{ opacity: 0; transform: translateY(6px); }
+    to  { opacity: 1; transform: none; }
+  }
+
+  /* =====================================================
+     紧凑版留言卡片
+     ===================================================== */
+  .card{
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    border-left: 3px solid var(--accent, #9dc0f5);
+    padding: 9px 13px 10px;
+    margin-bottom: 7px;
+    box-shadow: 0 3px 10px rgba(21, 71, 158, .08);
+    animation: pop .3s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes pop{
+    from{ opacity: 0; transform: translateY(10px) scale(.99); }
+    to  { opacity: 1; transform: none; }
+  }
+
+  .card-top{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 3px;
+    min-width: 0;
+  }
+
+  .avatar{
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1d4fa8;
+    background: linear-gradient(135deg, #e2eeff, #b7d2fb);
+  }
+
+  .name{
+    font-size: 13px;
+    font-weight: 700;
+    color: #1d4fa8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 40%;
+  }
+
+  .time{
+    margin-left: auto;
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    flex: 0 0 auto;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+  .time .abs{
+    font-size: 10.5px;
+    color: #9aabc4;
+    letter-spacing: -.2px;
+  }
+  .time .rel{
+    font-size: 10.5px;
+    color: #5f96f0;
+  }
+  .time .rel::before{
+    content: '·';
+    margin-right: 5px;
+    color: #c3d3e8;
+  }
+
+  .content{
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #44506a;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .empty{
+    text-align: center;
+    padding: 46px 16px;
+    color: #fff;
+    font-size: 15px;
+    text-shadow: 0 1px 6px rgba(21, 71, 158, .3);
+    background: rgba(255, 255, 255, .18);
+    border: 1px dashed rgba(255, 255, 255, .7);
+    border-radius: 18px;
+  }
+
+  .more-hint{
+    text-align: center;
+    padding: 12px 12px 6px;
+    font-size: 12.5px;
+    color: #fff;
+    opacity: .92;
+    text-shadow: 0 1px 6px rgba(21, 71, 158, .3);
+  }
+
+  /* ---------- 日历 ---------- */
+  .calendar{
+    background: rgba(255, 255, 255, .93);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 12px 34px rgba(21, 71, 158, .14);
+    margin-bottom: 6px;
+  }
+
+  .calendar-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .calendar-head .cal-title{
+    font-size: 17px;
+    font-weight: 700;
+    color: #1d4fa8;
+    font-variant-numeric: tabular-nums;
+  }
+  .calendar-head button{
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    background: #eaf2fe;
+    color: #2f6fe0;
+    box-shadow: none;
+  }
+  .calendar-head button:hover{
+    transform: none;
+    background: #d8e6fd;
+    box-shadow: none;
+  }
+  .calendar-head button:disabled{
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  .calendar-weekdays{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 12.5px;
+    color: #8ba0bd;
+    text-align: center;
+  }
+
+  .calendar-grid{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .cal-day{
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #44506a;
+    background: #f4f8ff;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s, transform .12s, color .15s;
+  }
+  .cal-day.empty{
+    background: transparent;
+    cursor: default;
+    pointer-events: none;
+  }
+  .cal-day:not(.empty):hover{
+    background: #e3effe;
+    transform: translateY(-1px);
+  }
+  .cal-day.today{
+    box-shadow: inset 0 0 0 1.5px #4d8bf0;
+    color: #2f6fe0;
+    font-weight: 700;
+  }
+  .cal-day.has-msg:not(.selected){
+    background: #dbe9ff;
+    color: #1d4fa8;
+    font-weight: 700;
+  }
+  .cal-day.selected{
+    background: linear-gradient(135deg, #6ba4f8, #2f6fe0);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(47, 111, 224, .38);
+  }
+  .cal-day.selected:hover{
+    background: linear-gradient(135deg, #6ba4f8, #2f6fe0);
+  }
+
+  .cal-dot{
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+    font-weight: 700;
+    color: #fff;
+    background: #4d8bf0;
+  }
+  .cal-day.selected .cal-dot{
+    background: #fff;
+    color: #2f6fe0;
+  }
+
+  .day-header{
+    margin: 18px 4px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 6px rgba(21, 71, 158, .3);
+  }
+
+  .day-empty{
+    text-align: center;
+    padding: 30px 16px;
+    color: #fff;
+    font-size: 14px;
+    text-shadow: 0 1px 6px rgba(21, 71, 158, .3);
+    background: rgba(255, 255, 255, .18);
+    border: 1px dashed rgba(255, 255, 255, .7);
+    border-radius: 18px;
+    margin-bottom: 14px;
+  }
+
+  /* ---------- 飘动小图标 ---------- */
+  .floaty{
+    position: fixed;
+    bottom: -50px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    animation-name: floatUp;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes floatUp{
+    0%  { opacity: 0; transform: translateY(0) rotate(0deg); }
+    12% { opacity: .85; }
+    100%{ opacity: 0; transform: translateY(-108vh) rotate(320deg); }
+  }
+
+  /* ---------- 响应式：小屏进一步压缩 ---------- */
+  @media (max-width: 480px){
+    body{ padding: 26px 12px 60px; }
+    h1{ font-size: 27px; }
+    .composer{ padding: 15px; border-radius: 18px; }
+    .time .abs{ font-size: 9.5px; }
+    .time .rel{ font-size: 9.5px; }
+    .avatar{ width: 20px; height: 20px; font-size: 10px; }
+    .name{ font-size: 12.5px; max-width: 32%; }
+    .content{ font-size: 13.5px; line-height: 1.58; }
+    .card{ padding: 8px 11px 9px; margin-bottom: 6px; border-radius: 11px; }
+    button{ padding: 10px 22px; font-size: 14px; }
+    .tab{ padding: 8px 16px; font-size: 13px; }
+    .calendar{ padding: 14px; border-radius: 18px; }
+    .calendar-head button{ width: 32px; height: 32px; font-size: 16px; }
+    .cal-day{ font-size: 13px; border-radius: 10px; }
+    .cal-dot{ font-size: 9px; min-width: 14px; height: 14px; line-height: 14px; }
+  }
+
+  /* 超小屏（<360px）：相对时间隐藏，保证完整日期可读 */
+  @media (max-width: 360px){
+    .time .rel{ display: none; }
+    .time .rel::before{ display: none; }
+    .name{ max-width: 30%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1><span class="wave">🏫</span> 十班的墙</h1>
+    <p class="sub">十班专属留言板 · 写下的每一句话都会被永远记住</p>
+  </header>
+
+  <section class="composer">
+    <input id="name" maxlength="12" placeholder="你的名字（可留空，默认「十班同学」）">
+    <textarea id="content" maxlength="300" placeholder="写点什么给十班吧……（Ctrl / ⌘ + Enter 快速发布）"></textarea>
+    <div class="composer-foot">
+      <span class="counter" id="counter">0 / 300</span>
+      <button id="submit">贴到墙上 ✨</button>
+    </div>
+  </section>
+
+  <div class="stats">
+    <span>墙上已有 <b id="count">0</b> 条留言</span>
+    <button class="link-btn" id="export">导出备份</button>
+  </div>
+
+  <div class="view-tabs">
+    <button class="tab active" data-view="latest" type="button">最新留言</button>
+    <button class="tab" data-view="calendar" type="button">留言日历</button>
+  </div>
+
+  <!-- 最新留言视图 -->
+  <div id="latest-view" class="view active">
+    <main id="wall"></main>
+  </div>
+
+  <!-- 日历视图 -->
+  <div id="calendar-view" class="view">
+    <div class="calendar">
+      <div class="calendar-head">
+        <button id="prevMonth" type="button" aria-label="上个月">‹</button>
+        <span id="calTitle" class="cal-title">—</span>
+        <button id="nextMonth" type="button" aria-label="下个月">›</button>
+      </div>
+      <div class="calendar-weekdays">
+        <span>日</span><span>一</span><span>二</span><span>三</span>
+        <span>四</span><span>五</span><span>六</span>
+      </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+    </div>
+    <div id="dayMessages"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API_URL = '/api/messages';
+  var MAX_LEN = 300;
+  var DEFAULT_NAME = '十班同学';
+  var LATEST_LIMIT = 50;
+
+  var nameInput    = document.getElementById('name');
+  var contentInput = document.getElementById('content');
+  var counterEl    = document.getElementById('counter');
+  var submitBtn    = document.getElementById('submit');
+  var exportBtn    = document.getElementById('export');
+  var wallEl       = document.getElementById('wall');
+  var countEl      = document.getElementById('count');
+  var calGrid      = document.getElementById('calendarGrid');
+  var calTitle     = document.getElementById('calTitle');
+  var dayBox       = document.getElementById('dayMessages');
+
+  var allMessages = [];
+  var lastCount   = -1;
+  var publishing  = false;
+
+  var now = new Date();
+  var calYear  = now.getFullYear();
+  var calMonth = now.getMonth();
+  var selectedDate = null;
+
+  /* ---------------- 工具函数 ---------------- */
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  // 完整时间：2025-01-08 20:31:07 周三
+  function formatFull(ts) {
+    var d = new Date(ts);
+    var week = ['日', '一', '二', '三', '四', '五', '六'][d.getDay()];
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+           ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) +
+           ' 周' + week;
+  }
+
+  // 紧凑格式（保留完整年份，省略秒和星期）：2025-01-08 20:31
+  function formatCompact(ts) {
+    var d = new Date(ts);
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+           ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  function timeAgo(ts) {
+    var diff = Date.now() - ts;
+    if (diff < 0) return '刚刚';
+    var sec = Math.floor(diff / 1000);
+    if (sec < 60) return '刚刚';
+    var min = Math.floor(sec / 60);
+    if (min < 60) return min + ' 分钟前';
+    var hour = Math.floor(min / 60);
+    if (hour < 24) return hour + ' 小时前';
+    var day = Math.floor(hour / 24);
+    if (day < 30) return day + ' 天前';
+    var month = Math.floor(day / 30);
+    if (month < 12) return month + ' 个月前';
+    return Math.floor(month / 12) + ' 年前';
+  }
+
+  function escapeHTML(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function hashCode(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) {
+      h = (h * 31 + str.charCodeAt(i)) | 0;
+    }
+    return Math.abs(h);
+  }
+
+  var ACCENTS = ['#6ba4f8', '#7fc7d9', '#8fb8f0', '#a5b4fc', '#7dd3c0', '#f0b96b', '#b7a6f0', '#78c6f0'];
+
+  /* ---------------- 后端交互 ---------------- */
+
+  async function fetchMessages() {
+    try {
+      var res = await fetch(API_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      if (!Array.isArray(data)) return [];
+      return data.filter(function (m) {
+        return m && typeof m.content === 'string' && typeof m.time === 'number';
+      });
+    } catch (e) {
+      console.error('加载留言失败：', e);
+      return null;
+    }
+  }
+
+  async function postMessage(name, content) {
+    var res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, content: content })
+    });
+    if (!res.ok) {
+      var errText = '';
+      try { errText = (await res.json()).error || ''; } catch (e) {}
+      throw new Error(errText || ('HTTP ' + res.status));
+    }
+    return res.json();
+  }
+
+  /* ---------------- 单条留言卡片 HTML（紧凑版） ---------------- */
+
+  function renderCard(m) {
+    var accent  = ACCENTS[hashCode(String(m.id || m.time)) % ACCENTS.length];
+    var name    = m.name || DEFAULT_NAME;
+    var initial = Array.from(name)[0] || '十';
+
+    return '' +
+      '<article class="card" style="--accent:' + accent + '">' +
+        '<div class="card-top">' +
+          '<div class="avatar">' + escapeHTML(initial) + '</div>' +
+          '<div class="name">' + escapeHTML(name) + '</div>' +
+          '<div class="time" title="' + formatFull(m.time) + '">' +
+            '<span class="abs">' + formatCompact(m.time) + '</span>' +
+            '<span class="rel" data-time="' + m.time + '">' + timeAgo(m.time) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<p class="content">' + escapeHTML(m.content) + '</p>' +
+      '</article>';
+  }
+
+  /* ---------------- 最新留言视图 ---------------- */
+
+  function renderLatest(loadFailed) {
+    countEl.textContent = allMessages.length;
+
+    if (loadFailed) {
+      wallEl.innerHTML = '<div class="empty">留言加载失败，请检查后端服务是否在运行 🙏</div>';
+      return;
+    }
+
+    if (allMessages.length === 0) {
+      wallEl.innerHTML = '<div class="empty">墙上还空着，来做第一个留言的人吧 ✨</div>';
+      return;
+    }
+
+    var list = allMessages.slice().sort(function (a, b) { return b.time - a.time; });
+    var recent = list.slice(0, LATEST_LIMIT);
+
+    var html = recent.map(renderCard).join('');
+
+    if (list.length > LATEST_LIMIT) {
+      html += '<div class="more-hint">仅显示最近 ' + LATEST_LIMIT + ' 条留言，' +
+              '更早的留言请切换到「留言日历」按日期查看 📅</div>';
+    }
+
+    wallEl.innerHTML = html;
+  }
+
+  /* ---------------- 日历视图 ---------------- */
+
+  function renderCalendar() {
+    calTitle.textContent = calYear + ' 年 ' + (calMonth + 1) + ' 月';
+
+    var dayCounts = {};
+    allMessages.forEach(function (m) {
+      var d = new Date(m.time);
+      if (d.getFullYear() === calYear && d.getMonth() === calMonth) {
+        var k = d.getDate();
+        dayCounts[k] = (dayCounts[k] || 0) + 1;
+      }
+    });
+
+    var firstWeekday = new Date(calYear, calMonth, 1).getDay();
+    var daysInMonth  = new Date(calYear, calMonth + 1, 0).getDate();
+
+    var today = new Date();
+    var isThisMonth = (today.getFullYear() === calYear && today.getMonth() === calMonth);
+
+    var html = '';
+
+    for (var i = 0; i < firstWeekday; i++) {
+      html += '<div class="cal-day empty"></div>';
+    }
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dateStr = calYear + '-' + pad(calMonth + 1) + '-' + pad(d);
+      var cls = 'cal-day';
+      if (isThisMonth && today.getDate() === d) cls += ' today';
+      if (selectedDate === dateStr) cls += ' selected';
+      if (dayCounts[d]) cls += ' has-msg';
+
+      html += '<div class="' + cls + '" data-date="' + dateStr + '">' +
+                '<span class="cal-num">' + d + '</span>' +
+                (dayCounts[d] ? '<span class="cal-dot">' + dayCounts[d] + '</span>' : '') +
+              '</div>';
+    }
+
+    calGrid.innerHTML = html;
+  }
+
+  function renderDayMessages(dateStr) {
+    var parts = dateStr.split('-');
+    var y  = Number(parts[0]);
+    var mo = Number(parts[1]) - 1;
+    var d  = Number(parts[2]);
+
+    var start = new Date(y, mo, d).getTime();
+    var end   = start + 24 * 60 * 60 * 1000;
+
+    var list = allMessages.filter(function (m) {
+      return m.time >= start && m.time < end;
+    }).sort(function (a, b) { return b.time - a.time; });
+
+    var head = '<div class="day-header">' + y + ' 年 ' + (mo + 1) + ' 月 ' + d +
+               ' 日 · 共 ' + list.length + ' 条留言</div>';
+
+    if (list.length === 0) {
+      dayBox.innerHTML = head + '<div class="day-empty">这一天还没有人留言</div>';
+    } else {
+      dayBox.innerHTML = head + list.map(renderCard).join('');
+    }
+  }
+
+  /* ---------------- 拉取并刷新 ---------------- */
+
+  async function refresh() {
+    var data = await fetchMessages();
+
+    if (data === null) {
+      renderLatest(true);
+      return;
+    }
+
+    if (data.length === lastCount) return;
+    lastCount = data.length;
+    allMessages = data;
+
+    renderLatest(false);
+    renderCalendar();
+    if (selectedDate) renderDayMessages(selectedDate);
+  }
+
+  /* ---------------- 定时刷新相对时间 ---------------- */
+
+  function refreshRelativeTimes() {
+    var nodes = document.querySelectorAll('.rel');
+    for (var i = 0; i < nodes.length; i++) {
+      var t = Number(nodes[i].getAttribute('data-time'));
+      nodes[i].textContent = timeAgo(t);
+    }
+  }
+  setInterval(refreshRelativeTimes, 15000);
+  setInterval(refresh, 20000);
+
+  /* ---------------- 发布 ---------------- */
+
+  function updateCounter() {
+    counterEl.textContent = contentInput.value.length + ' / ' + MAX_LEN;
+  }
+
+  function flashError(el) {
+    el.classList.add('error');
+    setTimeout(function () { el.classList.remove('error'); }, 650);
+  }
+
+  async function publish() {
+    if (publishing) return;
+
+    var content = contentInput.value.trim();
+    var name = nameInput.value.trim().slice(0, 12) || DEFAULT_NAME;
+
+    if (!content) {
+      flashError(contentInput);
+      contentInput.focus();
+      return;
+    }
+
+    publishing = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '发布中…';
+
+    try {
+      await postMessage(name, content);
+      contentInput.value = '';
+      updateCounter();
+      await refresh();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      console.error('发布失败：', e);
+      alert('发布失败：' + e.message + '\n请检查网络或后端服务是否正常。');
+    } finally {
+      publishing = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '贴到墙上 ✨';
+    }
+  }
+
+  submitBtn.addEventListener('click', publish);
+  contentInput.addEventListener('input', updateCounter);
+
+  contentInput.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      publish();
+    }
+  });
+
+  /* ---------------- 视图切换 ---------------- */
+
+  var tabs = document.querySelectorAll('.tab');
+  var views = document.querySelectorAll('.view');
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('active'); });
+      views.forEach(function (v) { v.classList.remove('active'); });
+
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.view + '-view').classList.add('active');
+
+      if (tab.dataset.view === 'calendar') {
+        renderCalendar();
+        if (selectedDate) renderDayMessages(selectedDate);
+      }
+    });
+  });
+
+  /* ---------------- 日历交互 ---------------- */
+
+  document.getElementById('prevMonth').addEventListener('click', function () {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+  });
+
+  document.getElementById('nextMonth').addEventListener('click', function () {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar();
+  });
+
+  calGrid.addEventListener('click', function (e) {
+    var cell = e.target.closest('.cal-day');
+    if (!cell || cell.classList.contains('empty')) return;
+
+    var date = cell.getAttribute('data-date');
+    if (!date) return;
+
+    selectedDate = date;
+    renderCalendar();
+    renderDayMessages(date);
+  });
+
+  /* ---------------- 导出备份 ---------------- */
+
+  exportBtn.addEventListener('click', function () {
+    if (allMessages.length === 0) {
+      alert('墙上还没有留言可以导出哦～');
+      return;
+    }
+    var blob = new Blob([JSON.stringify(allMessages, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var d = new Date();
+    a.href = url;
+    a.download = '十班的墙备份_' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  });
+
+  /* ---------------- 飘动小图标背景 ---------------- */
+
+  var FLOATIES = ['✨', '⭐', '📌', '💬', '🌟', '📝'];
+  function spawnFloaty() {
+    var h = document.createElement('div');
+    h.className = 'floaty';
+    h.textContent = FLOATIES[Math.floor(Math.random() * FLOATIES.length)];
+    h.style.left = Math.random() * 96 + 'vw';
+    h.style.fontSize = (13 + Math.random() * 18) + 'px';
+    h.style.animationDuration = (7 + Math.random() * 6) + 's';
+    document.body.appendChild(h);
+    setTimeout(function () { h.remove(); }, 14000);
+  }
+  for (var i = 0; i < 6; i++) setTimeout(spawnFloaty, i * 700);
+  setInterval(spawnFloaty, 1100);
+
+  /* ---------------- 启动 ---------------- */
+
+  updateCounter();
+  renderCalendar();
+  refresh();
+
+})();
+</script>
+</body>
+</html>
